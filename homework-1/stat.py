@@ -2,7 +2,7 @@ import pandas as pd
 import sys
 
 
-def parse_args(line: str) -> dict:
+def parse_args(line: list[str]) -> dict:
     """Parse the command line arguments
 
     Args:

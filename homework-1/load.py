@@ -26,15 +26,12 @@ def read_data(path: str) -> dict:
     Returns:
         dict: Output dict
     """
-    try:
-        with open(path, "rb") as f:
-            doc = json.load(f)
-        return doc
-    except FileNotFoundError as e:
-        print(e)
+    with open(path, "rb") as f:
+        doc = json.load(f)
+    return doc
 
 
-def parse_args(line: str) -> dict:
+def parse_args(line: list[str]) -> dict:
     """Parse the command line arguments
 
     Args:
