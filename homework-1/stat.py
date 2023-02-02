@@ -25,6 +25,7 @@ def get_avg_aqi(filename: str) -> pd.DataFrame:
         pd.DataFrame: Aggregated dataframe
     """
     df = pd.read_csv(filename)
+    df.drop_duplicates(inplace=True)
     df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
     df["Year"] = df["Date"].dt.year
     df["Month"] = df["Date"].dt.month
@@ -35,18 +36,24 @@ def get_avg_aqi(filename: str) -> pd.DataFrame:
         .rename(columns={"AQI Value": "Avg AQI"})
     )
     df.sort_values(by=["Country", "Year", "Month"], inplace=True)
+    df["Avg AQI"] = df["Avg AQI"].round(1)
     return df
 
 
 def save_as_json(df: pd.DataFrame, save_to: str):
     try:
         df.to_json(save_to, orient="records")
-        print(f"Successfully saved %s" % save_to)
+        print("Successfully saved %s" % save_to)
     except Exception as e:
-        print("Error saving data to %s" % save_to)
+        print("Error saving data to %s" % e)
 
 
 if __name__ == "__main__":
+    """To run the file execute the command
+    python stat.py aqi.csv aqi.json
+    OR
+    python stat.py aqi.csv.zip aqi.json
+    """
     args = parse_args(sys.argv)
     df = get_avg_aqi(args["source"])
     save_as_json(df, args["destination"])
