@@ -1,5 +1,5 @@
 {
-    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.typeCheckingMode": "off",
     "python.linting.flake8Enabled": true,
 	"python.linting.enabled": true,
 	"python.linting.flake8Args": [
@@ -8,6 +8,7 @@
 	],
 	"python.formatting.provider": "black",
 	"editor.formatOnSave": true,
-	"editor.formatOnSaveMode": "file"
+	"editor.formatOnSaveMode": "file",
+	"flake8.importStrategy": "fromEnvironment"
 
 }
