@@ -28,6 +28,10 @@ def read_data(path: str) -> dict:
     """
     with open(path, "rb") as f:
         doc = json.load(f)
+    doc = {
+        f"{i['Country'].lower().replace(' ','_')}{i['Year']}{i['Month']}": i
+        for i in doc
+    }
     return doc
 
 
