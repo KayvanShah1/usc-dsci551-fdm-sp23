@@ -4,7 +4,8 @@ import pandas as pd
 
 
 def search(db_conn_url: str, range_min: str, range_max: str) -> dict:
-    """Fetch filtered data from the database
+    """Fetch filtered data from the database. This function/query will only
+    work if data inserted at "aqi" is indexed on subkey "Avg AQI"
 
     Args:
         db_conn_url (str): Database connection URI
@@ -63,7 +64,5 @@ if __name__ == "__main__":
     python search.py https://test-5681a-default-rtdb.firebaseio.com/aqi.json 20 30
     """
     args = parse_args(sys.argv)
-    data = restucture_data(
-        search(args["db_conn_url"], args["range_min"], args["range_max"])
-    )
+    data = restucture_data(search(args["db_conn_url"], args["range_min"], args["range_max"]))
     print(data)
