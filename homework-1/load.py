@@ -50,7 +50,8 @@ def parse_args(line: list[str]) -> dict:
 
 if __name__ == "__main__":
     """To run the file execute the command
-    python load.py aqi.json https://test-5681a-default-rtdb.firebaseio.com/aqi.json"""
+    python load.py data/aqi.json https://test-5681a-default-rtdb.firebaseio.com/aqi.json
+    """
     args = parse_args(sys.argv)
     data = read_data(args["source"])
     push_to_firebase(args["destination"], data)
