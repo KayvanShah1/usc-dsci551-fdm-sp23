@@ -52,7 +52,7 @@ if __name__ == "__main__":
     """To run the file execute the command
     python stat.py data/aqi.csv data/aqi.json
     OR
-    python stat.py data/aqi.csv.zip data/aqi.json
+    python stat.py data/aqi.zip data/aqi.json
     """
     args = parse_args(sys.argv)
     df = get_avg_aqi(args["source"])
