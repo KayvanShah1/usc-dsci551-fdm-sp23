@@ -10,10 +10,6 @@
 		"--max-line-length=120",
 		"--ignore=E402,F841,F401,E302,E305,E266,E203,W503"
 	],
-	"python.formatting.blackArgs": [
-		"--line-length",
-		"120"
-	],
 	"python.formatting.provider": "black",
 	"editor.formatOnSave": true,
 	"editor.formatOnSaveMode": "file",

@@ -64,5 +64,7 @@ if __name__ == "__main__":
     python search.py https://test-5681a-default-rtdb.firebaseio.com/aqi.json 20 30
     """
     args = parse_args(sys.argv)
-    data = restucture_data(search(args["db_conn_url"], args["range_min"], args["range_max"]))
+    data = restucture_data(
+        search(args["db_conn_url"], args["range_min"], args["range_max"])
+    )
     print(data)
