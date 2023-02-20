@@ -7,11 +7,28 @@ import uuid
 import requests
 
 
-class FirebaseConf:
+class FirebaseConfig:
     base_uri = "https://test-5681a-default-rtdb.firebaseio.com"
 
 
-class HDFSEmulator:
+class FirebaseClient:
+    def __init__(self):
+        self.base_uri = FirebaseConfig.base_uri
+
+    def put(self, data):
+        ...
+
+    def post(self, data):
+        ...
+
+    def get(self):
+        ...
+
+    def delete(self):
+        ...
+
+
+class HDFSEmulator(FirebaseClient):
     def __init__(self, command: str, action_item: str):
         """_summary_
 
@@ -32,6 +49,8 @@ class HDFSEmulator:
             "-rm": self.rm,
             "-export": self.export,
         }
+
+        super().__init__()
 
     def _verify_input_command(self):
         assert self.command.startswith("-"), "Command must start with -"
