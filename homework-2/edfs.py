@@ -96,17 +96,17 @@ def dict2xml(obj: dict, line_padding: str = "") -> str:
         str: XML string representation of dictionary
     """
     res = list()
-    obj_type = type(obj)
+    elem_type = type(obj)
 
-    if obj_type is dict:
+    if elem_type is dict:
         for tag_name in obj:
-            sub_obj = obj[tag_name]
+            sub_elem = obj[tag_name]
             res.append(f"{line_padding}<{tag_name}>")
-            res.append(dict2xml(sub_obj, "\t" + line_padding))
+            res.append(dict2xml(sub_elem, "\t" + line_padding))
             res.append(f"{line_padding}<{tag_name}>")
         return "\n".join(res)
 
-    if obj_type is list:
+    if elem_type is list:
         for sub_elem in obj:
             res.append(dict2xml(sub_elem, line_padding))
         return "\n".join(res)
