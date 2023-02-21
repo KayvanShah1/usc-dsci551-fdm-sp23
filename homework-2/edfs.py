@@ -15,14 +15,19 @@ class FirebaseClient:
     def __init__(self):
         self.base_uri = FirebaseConfig.base_uri
 
-    def put(self, data):
-        ...
+    def put(self, path: str, data: dict):
+        res = requests.put(
+            f"{self.base_uri}{path}.json",
+            data=json.dumps(data),
+        )
+        return res.json()
 
     def post(self, data):
         ...
 
-    def get(self):
-        ...
+    def get(self, endpoint, params=None):
+        res = requests.get(f"{self.base_uri}{endpoint}")
+        return res.json()
 
     def delete(self):
         ...
@@ -55,13 +60,32 @@ class HDFSEmulator(FirebaseClient):
     def _verify_input_command(self):
         assert self.command.startswith("-"), "Command must start with -"
 
+    def _dir_exists(self) -> bool:
+        if self.get(f"{self.action_item}.json"):
+            return True
+        return False
+
+    def _get_parent_dir(self, path: str) -> str:
+        return "/".join(path.split("/")[:-1])
+
     def ls(self):
         ...
 
     def mkdir(self):
         try:
             assert self.action_item.startswith("/"), "Path must start with /"
-            requests.put()
+            if not self._dir_exists():
+                self.put(
+                    self.action_item,
+                    data={
+                        "type": "DIR",
+                        "name": self.action_item.split("/")[-1],
+                        "id": uuid.uuid4().hex,
+                    },
+                )
+                print(f"Successfully created directory: {self.action_item}")
+            else:
+                print(f"Directory already exists: {self.action_item}")
         except Exception as e:
             print(f"Error: {e}")
 
