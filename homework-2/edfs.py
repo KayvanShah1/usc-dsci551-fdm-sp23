@@ -133,7 +133,12 @@ class HDFSEmulator(FirebaseClient):
             print(f"Error: {e}")
 
     def rm(self):
-        ...
+        file_endpoint = self.action_item.split(".")[0]
+        if self._file_exists():
+            self.delete(f"{file_endpoint}.json")
+            print(f"Successfully deleted file: {self.action_item}")
+        else:
+            print(f"File does not exist: {self.action_item}")
 
     def export(self):
         ...
