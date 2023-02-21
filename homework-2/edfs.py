@@ -59,10 +59,19 @@ class HDFSEmulator(FirebaseClient):
         super().__init__()
 
     def _verify_input_command(self):
+        """Verify the format of input command"""
         assert self.command.startswith("-"), "Command must start with -"
 
     def _dir_exists(self) -> bool:
+        """Check if the directory exists or not."""
         if self.get(f"{self.action_item}.json"):
+            return True
+        return False
+
+    def _file_exists(self) -> bool:
+        """Check if the file exists or not."""
+        file_endpoint = self.action_item.split(".")[0]
+        if self.get(f"{file_endpoint}.json"):
             return True
         return False
 
@@ -100,11 +109,28 @@ class HDFSEmulator(FirebaseClient):
             if self._is_dir_empty():
                 self.delete(f"{self.action_item}.json")
                 print(f"Successfully deleted directory: {self.action_item}")
+            else:
+                print(f"Directory is not empty: {self.action_item}")
         except Exception as e:
-            print(f"Directory does not exist or is not empty: {self.action_item}")
+            print(f"Directory does not exist: {self.action_item}")
 
     def create(self):
-        ...
+        try:
+            if not self._file_exists():
+                self.put(
+                    self.action_item.split(".")[0],
+                    data={
+                        "type": "FILE",
+                        "name": self.action_item.split("/")[-1],
+                        "id": uuid.uuid4().hex,
+                        "content": "hello world",
+                    },
+                )
+                print(f"Successfully created file: {self.action_item}")
+            else:
+                print(f"File already exists: {self.action_item}")
+        except Exception as e:
+            print(f"Error: {e}")
 
     def rm(self):
         ...
@@ -117,7 +143,7 @@ class HDFSEmulator(FirebaseClient):
             self.function_list[self.command]()
         except Exception as e:
             print(f"Command not found: {self.command}")
-            print(f"Error: {e}")
+            print(f"Available Commands: {list(self.function_list.keys())}")
 
 
 def dict2xml(obj: dict, line_padding: str = "") -> str:
