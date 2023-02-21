@@ -29,8 +29,9 @@ class FirebaseClient:
         res = requests.get(f"{self.base_uri}{endpoint}")
         return res.json()
 
-    def delete(self):
-        ...
+    def delete(self, endpoint):
+        res = requests.delete(f"{self.base_uri}{endpoint}")
+        return res.json()
 
 
 class HDFSEmulator(FirebaseClient):
@@ -65,6 +66,11 @@ class HDFSEmulator(FirebaseClient):
             return True
         return False
 
+    def _is_dir_empty(self) -> bool:
+        if len(self.get(f"{self.action_item}.json").keys()) > 3:
+            return False
+        return True
+
     def _get_parent_dir(self, path: str) -> str:
         return "/".join(path.split("/")[:-1])
 
@@ -90,7 +96,12 @@ class HDFSEmulator(FirebaseClient):
             print(f"Error: {e}")
 
     def rmdir(self):
-        ...
+        try:
+            if self._is_dir_empty():
+                self.delete(f"{self.action_item}.json")
+                print(f"Successfully deleted directory: {self.action_item}")
+        except Exception as e:
+            print(f"Directory does not exist or is not empty: {self.action_item}")
 
     def create(self):
         ...
