@@ -1,10 +1,9 @@
-import base64
-import fileinput
 import json
 import sys
 import uuid
 
 import requests
+import traceback
 
 
 class FirebaseConfig:
@@ -21,9 +20,6 @@ class FirebaseClient:
             data=json.dumps(data),
         )
         return res.json()
-
-    def post(self, data):
-        ...
 
     def get(self, endpoint, params=None):
         res = requests.get(f"{self.base_uri}{endpoint}")
@@ -44,6 +40,8 @@ class HDFSEmulator(FirebaseClient):
         """
         self.command = command
         self.action_item = action_item
+        self.parent = action_item
+        self._metadata_vars = ["type", "id"]
 
         self._verify_input_command()
 
@@ -63,28 +61,59 @@ class HDFSEmulator(FirebaseClient):
         assert self.command.startswith("-"), "Command must start with -"
 
     def _dir_exists(self) -> bool:
-        """Check if the directory exists or not."""
+        """Checks if the directory exists."""
         if self.get(f"{self.action_item}.json"):
             return True
         return False
 
     def _file_exists(self) -> bool:
-        """Check if the file exists or not."""
+        """Checks if the file exists."""
         file_endpoint = self.action_item.split(".")[0]
         if self.get(f"{file_endpoint}.json"):
             return True
         return False
 
     def _is_dir_empty(self) -> bool:
+        """Checks if the folder is empty."""
         if len(self.get(f"{self.action_item}.json").keys()) > 3:
             return False
         return True
 
     def _get_parent_dir(self, path: str) -> str:
+        """Get the parent directory"""
         return "/".join(path.split("/")[:-1])
 
+    def top_level_parser(self, json_doc: dict) -> list:
+        """_summary_
+
+        Args:
+            json_doc (dict): _description_
+
+        Returns:
+            list: _description_
+        """
+        parsed_list = []
+        for key, value in json_doc.items():
+            if type(value) is dict:
+                if "type" in value.keys():
+                    parsed_list.append(
+                        value["name"]
+                        if value["type"] == "FILE"
+                        else f"/{value['name']}"
+                    )
+                else:
+                    parsed_list.append(f"/{key}")
+        return parsed_list
+
     def ls(self):
-        ...
+        try:
+            if self.action_item == "/":
+                res = self.get("/.json")
+            else:
+                res = self.get(f"{self.action_item}.json")
+            print("\t".join(self.top_level_parser(res)))
+        except Exception as e:
+            print("Error", traceback.format_exc())
 
     def mkdir(self):
         try:
@@ -113,6 +142,7 @@ class HDFSEmulator(FirebaseClient):
                 print(f"Directory is not empty: {self.action_item}")
         except Exception as e:
             print(f"Directory does not exist: {self.action_item}")
+            print(f"Error: {e}")
 
     def create(self):
         try:
@@ -145,10 +175,15 @@ class HDFSEmulator(FirebaseClient):
 
     def execute(self):
         try:
-            self.function_list[self.command]()
+            if self.command in self.function_list.keys():
+                self.function_list[self.command]()
+            else:
+                print(f"Command not found: {self.command}")
+                print(f"Available Commands: {list(self.function_list.keys())}")
         except Exception as e:
-            print(f"Command not found: {self.command}")
-            print(f"Available Commands: {list(self.function_list.keys())}")
+            print(
+                f"Error occured while exceuting the command, check the arguments.\n{e}"
+            )
 
 
 def dict2xml(obj: dict, line_padding: str = "") -> str:
