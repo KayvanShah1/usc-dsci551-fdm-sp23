@@ -3,7 +3,6 @@ import sys
 import uuid
 
 import requests
-import traceback
 
 
 class FirebaseConfig:
@@ -21,7 +20,7 @@ class FirebaseClient:
         )
         return res.json()
 
-    def get(self, endpoint, params=None):
+    def get(self, endpoint):
         res = requests.get(f"{self.base_uri}{endpoint}")
         return res.json()
 
@@ -40,7 +39,7 @@ class HDFSEmulator(FirebaseClient):
         """
         self.command = command
         self.action_item = action_item
-        self.parent = action_item
+        self.parent = self._get_parent_dir(action_item)
         self._metadata_vars = ["type", "id"]
 
         self._verify_input_command()
@@ -60,22 +59,22 @@ class HDFSEmulator(FirebaseClient):
         """Verify the format of input command"""
         assert self.command.startswith("-"), "Command must start with -"
 
-    def _dir_exists(self) -> bool:
+    def _dir_exists(self, path) -> bool:
         """Checks if the directory exists."""
-        if self.get(f"{self.action_item}.json"):
+        if self.get(f"{path}.json"):
             return True
         return False
 
-    def _file_exists(self) -> bool:
+    def _file_exists(self, path) -> bool:
         """Checks if the file exists."""
-        file_endpoint = self.action_item.split(".")[0]
+        file_endpoint = path.split(".")[0]
         if self.get(f"{file_endpoint}.json"):
             return True
         return False
 
-    def _is_dir_empty(self) -> bool:
+    def _is_dir_empty(self, path) -> bool:
         """Checks if the folder is empty."""
-        if len(self.get(f"{self.action_item}.json").keys()) > 3:
+        if len(self.get(f"{path}.json").keys()) > 3:
             return False
         return True
 
@@ -105,70 +104,80 @@ class HDFSEmulator(FirebaseClient):
                     parsed_list.append(f"/{key}")
         return parsed_list
 
-    def ls(self):
+    def ls(self, path):
         try:
-            if self.action_item == "/":
+            if path == "/":
                 res = self.get("/.json")
             else:
-                res = self.get(f"{self.action_item}.json")
+                res = self.get(f"{path}.json")
             print("\t".join(self.top_level_parser(res)))
         except Exception as e:
-            print("Error", traceback.format_exc())
+            print("Error", e)
 
-    def mkdir(self):
+    def mkdir(self, path):
         try:
-            assert self.action_item.startswith("/"), "Path must start with /"
-            if not self._dir_exists():
+            assert path.startswith("/"), "Path must start with /"
+
+            # Check and create user directory
+            if len("/".join(path.split("/"))) == 3:
+                print("User dir not found. Creating one...")
+                user_dir = "/".join(path.split("/")[:2])
+                self.mkdir(user_dir)
+
+            # Create dir
+            if not self._dir_exists(path):
                 self.put(
-                    self.action_item,
+                    path,
                     data={
                         "type": "DIR",
-                        "name": self.action_item.split("/")[-1],
+                        "name": path.split("/")[-1],
                         "id": uuid.uuid4().hex,
                     },
                 )
-                print(f"Successfully created directory: {self.action_item}")
+                print(f"Successfully created directory: {path}")
             else:
-                print(f"Directory already exists: {self.action_item}")
+                print(f"Directory already exists: {path}")
         except Exception as e:
             print(f"Error: {e}")
 
-    def rmdir(self):
+    def rmdir(self, path):
         try:
-            if self._is_dir_empty():
-                self.delete(f"{self.action_item}.json")
-                print(f"Successfully deleted directory: {self.action_item}")
+            if self._is_dir_empty(path):
+                self.delete(f"{path}.json")
+                print(f"Successfully deleted directory: {path}")
             else:
-                print(f"Directory is not empty: {self.action_item}")
+                print(f"Directory is not empty: {path}")
         except Exception as e:
-            print(f"Directory does not exist: {self.action_item}")
-            print(f"Error: {e}")
+            print(f"Invalid path: {path}")
 
-    def create(self):
+    def create(self, path: str):
         try:
-            if not self._file_exists():
-                self.put(
-                    self.action_item.split(".")[0],
-                    data={
-                        "type": "FILE",
-                        "name": self.action_item.split("/")[-1],
-                        "id": uuid.uuid4().hex,
-                        "content": "hello world",
-                    },
-                )
-                print(f"Successfully created file: {self.action_item}")
+            if self._dir_exists(self._get_parent_dir(path)):
+                if not self._file_exists(path):
+                    self.put(
+                        path.split(".")[0],
+                        data={
+                            "type": "FILE",
+                            "name": path.split("/")[-1],
+                            "id": uuid.uuid4().hex,
+                            "content": "hello world",
+                        },
+                    )
+                    print(f"Successfully created file: {path}")
+                else:
+                    print(f"File already exists: {path}")
             else:
-                print(f"File already exists: {self.action_item}")
+                print(f"Invalid Path: {path}")
         except Exception as e:
             print(f"Error: {e}")
 
-    def rm(self):
-        file_endpoint = self.action_item.split(".")[0]
-        if self._file_exists():
+    def rm(self, path: str):
+        file_endpoint = path.split(".")[0]
+        if self._file_exists(path):
             self.delete(f"{file_endpoint}.json")
-            print(f"Successfully deleted file: {self.action_item}")
+            print(f"Successfully deleted file: {path}")
         else:
-            print(f"File does not exist: {self.action_item}")
+            print(f"File does not exist: {path}")
 
     def export(self):
         ...
@@ -176,7 +185,7 @@ class HDFSEmulator(FirebaseClient):
     def execute(self):
         try:
             if self.command in self.function_list.keys():
-                self.function_list[self.command]()
+                self.function_list[self.command](self.action_item)
             else:
                 print(f"Command not found: {self.command}")
                 print(f"Available Commands: {list(self.function_list.keys())}")

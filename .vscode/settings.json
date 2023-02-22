@@ -1,6 +1,6 @@
 {
-    "python.analysis.typeCheckingMode": "off",
-    "python.linting.flake8Enabled": true,
+	"python.analysis.typeCheckingMode": "off",
+	"python.linting.flake8Enabled": true,
 	"python.linting.enabled": true,
 	"python.linting.flake8Args": [
 		"--max-line-length=120",
@@ -13,4 +13,7 @@
 	"python.formatting.provider": "black",
 	"editor.formatOnSave": true,
 	"editor.formatOnSaveMode": "file",
+	"python.languageServer": "Pylance",
+	"python.analysis.autoImportUserSymbols": true,
+	"python.analysis.completeFunctionParens": true,
 }
