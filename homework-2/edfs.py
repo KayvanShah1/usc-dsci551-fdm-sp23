@@ -20,11 +20,11 @@ class FirebaseClient:
         )
         return res.json()
 
-    def get(self, endpoint):
+    def get(self, endpoint: str):
         res = requests.get(f"{self.base_uri}{endpoint}")
         return res.json()
 
-    def delete(self, endpoint):
+    def delete(self, endpoint: str):
         res = requests.delete(f"{self.base_uri}{endpoint}")
         return res.json()
 
@@ -59,20 +59,20 @@ class HDFSEmulator(FirebaseClient):
         """Verify the format of input command"""
         assert self.command.startswith("-"), "Command must start with -"
 
-    def _dir_exists(self, path) -> bool:
+    def _dir_exists(self, path: str) -> bool:
         """Checks if the directory exists."""
         if self.get(f"{path}.json"):
             return True
         return False
 
-    def _file_exists(self, path) -> bool:
+    def _file_exists(self, path: str) -> bool:
         """Checks if the file exists."""
         file_endpoint = path.split(".")[0]
         if self.get(f"{file_endpoint}.json"):
             return True
         return False
 
-    def _is_dir_empty(self, path) -> bool:
+    def _is_dir_empty(self, path: str) -> bool:
         """Checks if the folder is empty."""
         if len(self.get(f"{path}.json").keys()) > 3:
             return False
@@ -104,7 +104,7 @@ class HDFSEmulator(FirebaseClient):
                     parsed_list.append(f"/{key}")
         return parsed_list
 
-    def ls(self, path):
+    def ls(self, path: str):
         try:
             if path == "/":
                 res = self.get("/.json")
@@ -114,7 +114,7 @@ class HDFSEmulator(FirebaseClient):
         except Exception as e:
             print("Error", e)
 
-    def mkdir(self, path):
+    def mkdir(self, path: str):
         try:
             assert path.startswith("/"), "Path must start with /"
 
@@ -140,7 +140,7 @@ class HDFSEmulator(FirebaseClient):
         except Exception as e:
             print(f"Error: {e}")
 
-    def rmdir(self, path):
+    def rmdir(self, path: str):
         try:
             if self._is_dir_empty(path):
                 self.delete(f"{path}.json")
