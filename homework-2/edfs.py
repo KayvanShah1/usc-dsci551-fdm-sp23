@@ -341,6 +341,23 @@ def parse_args(line: list[str]) -> dict:
 if __name__ == "__main__":
     """To run the file execute the command
     python edfs.py <command> <action-item>
+    OR
+    python3 edfs.py <command> <action-item>
+
+    Examples:
+    1.  python edfs.py -mkdir /kayvan/test
+        python edfs.py -mkdir /test-user
+
+    2.  python edfs.py -create /kayvan/test.txt
+
+    3.  python edfs.py -rmdir /test-user
+
+    4.  python edfs.py -ls /
+        python edfs.py -ls /test
+
+    5.  python edfs.py -rm /kayvan/test.txt
+
+    6.  python edfs.py -export output.xml
     """
     args = parse_args(sys.argv)
     fs = HDFSEmulator(args["command"], args["action_item"])
