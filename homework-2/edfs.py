@@ -6,14 +6,27 @@ import requests
 
 
 class FirebaseConfig:
+    """Firebase Realtime DB config"""
+
     base_uri = "https://test-5681a-default-rtdb.firebaseio.com"
 
 
 class FirebaseClient:
+    """Firebase Client with GET, PUT & DELETE request functionalites"""
+
     def __init__(self):
         self.base_uri = FirebaseConfig.base_uri
 
-    def put(self, path: str, data: dict):
+    def put(self, path: str, data: dict) -> dict:
+        """Sends a PUT request to Firebase DB API server to create file or directory
+
+        Args:
+            path (str): File or directory path
+            data (dict): Metadata for file or directory
+
+        Returns:
+            dict: Request Feedback as JSON Response
+        """
         res = requests.put(
             f"{self.base_uri}{path}.json",
             data=json.dumps(data),
@@ -21,21 +34,45 @@ class FirebaseClient:
         return res.json()
 
     def get(self, endpoint: str):
+        """Sends a GET request to Firebase Realtime DB to get list of files and directories
+        and to find if a file or directory exists or not
+
+        Args:
+            endpoint (str): File or folder path
+
+        Returns:
+            dict: Request Feedback as JSON Response
+        """
         res = requests.get(f"{self.base_uri}{endpoint}")
         return res.json()
 
     def delete(self, endpoint: str):
+        """Sends a DELETE request to Firebase Realtime DB server to delete a file or directory
+
+        Args:
+            endpoint (str): File or folder path
+
+        Returns:
+            dict: Request Feedback as JSON Response
+        """
         res = requests.delete(f"{self.base_uri}{endpoint}")
         return res.json()
 
 
 class HDFSEmulator(FirebaseClient):
+    """Emulate the file system structure of HDFS using Firebase and allow the export of its
+    structure in the XML format.
+
+    Args:
+        FirebaseClient (class): Firebase API Client
+    """
+
     def __init__(self, command: str, action_item: str):
-        """_summary_
+        """Initialise the HDFS file system emulator with command and arguments
 
         Args:
-            command (str): _description_
-            action_item (str): _description_
+            command (str): Input command
+            action_item (str): Path
         """
         self.command = command
         self.action_item = action_item
@@ -82,13 +119,13 @@ class HDFSEmulator(FirebaseClient):
         return "/".join(path.split("/")[:-1])
 
     def top_level_parser(self, json_doc: dict) -> list:
-        """_summary_
+        """Parses files and directories at depth level of 1
 
         Args:
-            json_doc (dict): _description_
+            json_doc (dict): JSON response with file and directories for a path
 
         Returns:
-            list: _description_
+            list: List of files and directories at depth=1
         """
         parsed_list = []
         for key, value in json_doc.items():
@@ -98,7 +135,15 @@ class HDFSEmulator(FirebaseClient):
                 )
         return parsed_list
 
-    def fs_parser(self, obj: dict):
+    def fs_parser(self, obj: dict) -> dict:
+        """Parses the file system JSON response removing the metadata in the skeleton format
+
+        Args:
+            obj (dict): JSON response to be parsed
+
+        Returns:
+            dict: Parsed dictionary
+        """
         res = {}
         for elem in obj:
             if type(obj[elem]) is dict:
@@ -110,6 +155,11 @@ class HDFSEmulator(FirebaseClient):
         return res
 
     def ls(self, path: str):
+        """List all files and directory for a given path
+
+        Args:
+            path (str): Directory or file path
+        """
         try:
             if path == "/":
                 res = self.get("/.json")
@@ -120,6 +170,12 @@ class HDFSEmulator(FirebaseClient):
             print("Invalid Path:", path)
 
     def mkdir(self, path: str):
+        """Create a new directory only if parent directory exists. This function will also
+        check for user directory, if not found it will create one for the user.
+
+        Args:
+            path (str): Directory Path
+        """
         try:
             assert path.startswith("/"), "Path must start with /"
 
@@ -156,6 +212,11 @@ class HDFSEmulator(FirebaseClient):
             print(f"Error: {e}")
 
     def rmdir(self, path: str):
+        """Remove directory only if empty
+
+        Args:
+            path (str): Directory Path
+        """
         try:
             if self._is_dir_empty(path):
                 self.delete(f"{path}.json")
@@ -166,6 +227,11 @@ class HDFSEmulator(FirebaseClient):
             print(f"Invalid path: {path}")
 
     def create(self, path: str):
+        """Create/Write to new file
+
+        Args:
+            path (str): File path
+        """
         try:
             if self._dir_exists(self._get_parent_dir(path)):
                 if not self._file_exists(path):
@@ -187,6 +253,11 @@ class HDFSEmulator(FirebaseClient):
             print(f"Error: {e}")
 
     def rm(self, path: str):
+        """Delete file
+
+        Args:
+            path (str): File Path
+        """
         file_endpoint = path.split(".")[0]
         if self._file_exists(path):
             self.delete(f"{file_endpoint}.json")
@@ -194,7 +265,12 @@ class HDFSEmulator(FirebaseClient):
         else:
             print(f"Invalid Path: {path}")
 
-    def export(self, output_path: str):
+    def export(self, output_path: str = "fs_output.xml"):
+        """Export the file system skeleton after parsing as XML file
+
+        Args:
+            output_path (str): Save to location. Eg: "output.xml"
+        """
         assert ".xml" in output_path, "Can only write to xml files"
         try:
             res = self.fs_parser(self.get("/.json"))
@@ -207,6 +283,7 @@ class HDFSEmulator(FirebaseClient):
             print(e)
 
     def execute(self):
+        """Execute the input command"""
         try:
             if self.command in self.function_list.keys():
                 self.function_list[self.command](self.action_item)
