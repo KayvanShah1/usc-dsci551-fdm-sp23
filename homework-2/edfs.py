@@ -39,7 +39,6 @@ class HDFSEmulator(FirebaseClient):
         """
         self.command = command
         self.action_item = action_item
-        self.parent = self._get_parent_dir(action_item)
         self._metadata_vars = ["type", "id"]
 
         self._verify_input_command()
@@ -94,15 +93,21 @@ class HDFSEmulator(FirebaseClient):
         parsed_list = []
         for key, value in json_doc.items():
             if type(value) is dict:
-                if "type" in value.keys():
-                    parsed_list.append(
-                        value["name"]
-                        if value["type"] == "FILE"
-                        else f"/{value['name']}"
-                    )
-                else:
-                    parsed_list.append(f"/{key}")
+                parsed_list.append(
+                    value["name"] if value["type"] == "FILE" else f"/{value['name']}"
+                )
         return parsed_list
+
+    def fs_parser(self, obj: dict):
+        res = {}
+
+        for elem in obj:
+            if type(obj[elem]) is dict:
+                if obj[elem]["type"] == "DIR":
+                    res[f"{obj[elem]['name']}"] = self.fs_parser(obj[elem])
+                if obj[elem]["type"] == "FILE":
+                    res[f"{obj[elem]['name']}"] = self.fs_parser(obj[elem])
+        return res
 
     def ls(self, path: str):
         try:
@@ -110,19 +115,29 @@ class HDFSEmulator(FirebaseClient):
                 res = self.get("/.json")
             else:
                 res = self.get(f"{path}.json")
-            print("\t".join(self.top_level_parser(res)))
+            print("\t\t".join(self.top_level_parser(res)))
         except Exception as e:
-            print("Error", e)
+            print("Invalid Path:", path)
 
     def mkdir(self, path: str):
         try:
             assert path.startswith("/"), "Path must start with /"
 
+            user_dir = "/".join(path.split("/")[:2])
             # Check and create user directory
-            if len("/".join(path.split("/"))) == 3:
-                print("User dir not found. Creating one...")
-                user_dir = "/".join(path.split("/")[:2])
-                self.mkdir(user_dir)
+            if len(path.split("/")) == 3:
+                if not self._dir_exists(user_dir):
+                    print("User dir not found. Creating one...")
+                    self.mkdir(user_dir)
+
+            # Check if parent directory exists
+            if len(path.split("/")) >= 3:
+                is_parent = self._dir_exists(self._get_parent_dir(path))
+                if is_parent:
+                    ...
+                else:
+                    print("Invalid Path:", path)
+                    return
 
             # Create dir
             if not self._dir_exists(path):
@@ -177,10 +192,15 @@ class HDFSEmulator(FirebaseClient):
             self.delete(f"{file_endpoint}.json")
             print(f"Successfully deleted file: {path}")
         else:
-            print(f"File does not exist: {path}")
+            print(f"Invalid Path: {path}")
 
-    def export(self):
-        ...
+    def export(self, output_path: str):
+        try:
+            res = self.fs_parser(self.get("/.json"))
+            res = dict2xml({"root": res})
+            print(res)
+        except Exception as e:
+            print(e)
 
     def execute(self):
         try:
@@ -213,7 +233,7 @@ def dict2xml(obj: dict, line_padding: str = "") -> str:
             sub_elem = obj[tag_name]
             res.append(f"{line_padding}<{tag_name}>")
             res.append(dict2xml(sub_elem, "\t" + line_padding))
-            res.append(f"{line_padding}<{tag_name}>")
+            res.append(f"{line_padding}</{tag_name}>")
         return "\n".join(res)
 
     if elem_type is list:
