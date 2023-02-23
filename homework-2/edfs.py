@@ -100,13 +100,13 @@ class HDFSEmulator(FirebaseClient):
 
     def fs_parser(self, obj: dict):
         res = {}
-
         for elem in obj:
             if type(obj[elem]) is dict:
                 if obj[elem]["type"] == "DIR":
-                    res[f"{obj[elem]['name']}"] = self.fs_parser(obj[elem])
+                    dir_key = f"{obj[elem]['name']}"
+                    res[dir_key] = [self.fs_parser(obj[elem])]
                 if obj[elem]["type"] == "FILE":
-                    res[f"{obj[elem]['name']}"] = self.fs_parser(obj[elem])
+                    res[dir_key].append(f"<{obj[elem]['name']}/>")
         return res
 
     def ls(self, path: str):
@@ -195,10 +195,14 @@ class HDFSEmulator(FirebaseClient):
             print(f"Invalid Path: {path}")
 
     def export(self, output_path: str):
+        assert ".xml" in output_path, "Can only write to xml files"
         try:
             res = self.fs_parser(self.get("/.json"))
             res = dict2xml({"root": res})
-            print(res)
+            res = "\n".join([line for line in res.split("\n") if line.strip() != ""])
+
+            with open(output_path, "w") as f:
+                f.write(res)
         except Exception as e:
             print(e)
 
