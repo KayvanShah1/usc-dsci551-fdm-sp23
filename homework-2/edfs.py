@@ -149,9 +149,10 @@ class HDFSEmulator(FirebaseClient):
             if type(obj[elem]) is dict:
                 if obj[elem]["type"] == "DIR":
                     dir_key = f"{obj[elem]['name']}"
-                    res[dir_key] = [self.fs_parser(obj[elem])]
+                    res[dir_key] = self.fs_parser(obj[elem])
                 if obj[elem]["type"] == "FILE":
-                    res[dir_key].append(f"<{obj[elem]['name']}/>")
+                    dir_key = f"{obj[elem]['name']}/"
+                    res[dir_key] = ""
         return res
 
     def ls(self, path: str):
@@ -288,12 +289,15 @@ class HDFSEmulator(FirebaseClient):
         try:
             res = self.fs_parser(self.get("/.json"))
             res = dict2xml({"root": res})
-            res = "\n".join([line for line in res.split("\n") if line.strip() != ""])
+            res = [line for line in res.split("\n") if line.strip() != ""]
+            res = [line for line in res if not all([x in line for x in ["</", "/>"]])]
+            res = "\n".join(res)
 
             with open(output_path, "w") as f:
                 f.write(res)
+            print("Successfully exported file structure to: " + output_path)
         except Exception as e:
-            print(e)
+            print(f"Error: {e}")
 
     def execute(self):
         """Execute the input command"""

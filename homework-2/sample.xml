@@ -1,4 +1,5 @@
 <root>
+	<extra.txt/>
 	<user>
 		<test>
 			<sub-test-1>
@@ -6,15 +7,16 @@
 			<sub-test-2>
 			</sub-test-2>
 			<sub-test-3>
-				<test-file-1.txt/>
-				<test-file-2.txt/>
-				<test-file-3.txt/>
 			</sub-test-3>
+			<test-file-1.txt/>
+			<test-file-2.txt/>
+			<test-file-3.txt/>
 		</test>
 	</user>
 	<user-mac>
 	</user-mac>
 	<user1>
+		<extra.txt/>
 	</user1>
 	<user3>
 		<folder-demo>
