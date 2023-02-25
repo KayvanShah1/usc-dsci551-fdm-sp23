@@ -289,7 +289,9 @@ class HDFSEmulator(FirebaseClient):
         try:
             res = self.fs_parser(self.get("/.json"))
             res = dict2xml({"root": res})
+            # Drop extra lines
             res = [line for line in res.split("\n") if line.strip() != ""]
+            # Drop duplicate tags for files
             res = [line for line in res if not all([x in line for x in ["</", "/>"]])]
             res = "\n".join(res)
 
