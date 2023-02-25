@@ -233,7 +233,19 @@ class HDFSEmulator(FirebaseClient):
             path (str): File path
         """
         try:
-            if self._dir_exists(self._get_parent_dir(path)):
+            if "/" not in path:
+                if not self._file_exists(f"/{path}"):
+                    self.put(
+                        f"/{path.split('.')[0]}",
+                        data={
+                            "type": "FILE",
+                            "name": path.split("/")[-1],
+                            "id": uuid.uuid4().hex,
+                            "content": "hello world",
+                        },
+                    )
+                    print(f"Successfully created file: {path}")
+            elif self._dir_exists(self._get_parent_dir(path)):
                 if not self._file_exists(path):
                     self.put(
                         path.split(".")[0],
@@ -258,6 +270,7 @@ class HDFSEmulator(FirebaseClient):
         Args:
             path (str): File Path
         """
+        path = f"/{path}" if "/" not in path else path
         file_endpoint = path.split(".")[0]
         if self._file_exists(path):
             self.delete(f"{file_endpoint}.json")
