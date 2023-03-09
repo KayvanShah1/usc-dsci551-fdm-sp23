@@ -16,4 +16,5 @@
 	"python.languageServer": "Pylance",
 	"python.analysis.autoImportUserSymbols": true,
 	"python.analysis.completeFunctionParens": true,
+	"python.defaultInterpreterPath": "C:\\binaries\\python_envs\\DSCI551\\Scripts\\python.exe"
 }
