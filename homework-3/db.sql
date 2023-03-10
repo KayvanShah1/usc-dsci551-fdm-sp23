@@ -1,9 +1,12 @@
+-- Create a new database
+CREATE DATABASE IF NOT EXISTS dsci551;
+
 -- Drop and create inode table
 DROP TABLE IF EXISTS `inode`;
 
 CREATE TABLE IF NOT EXISTS `inode`
 (
-    id INT OPTIONS (description = "inumber"),
+    id INT COMMENT "inumber",
     type CHAR (10) NOT NULL,
     name CHAR (30) NOT NULL UNIQUE,
     replication TINYINT DEFAULT 1,
@@ -19,12 +22,12 @@ DROP TABLE IF EXISTS `blocks`;
 
 CREATE TABLE IF NOT EXISTS `blocks`
 (
-    id INT OPTIONS (description = "inumber of block"),
-    inumber INT (10) OPTIONS (description = "inode id of file"),
+    id INT COMMENT "inumber of block",
+    inumber INT (10) COMMENT "inode id of file",
     genstamp INT,
     numBytes INT NOT NULL,
     PRIMARY KEY (id),
-    FORIEGN KEY (inumber) REFERENCES inode(id) ON DELETE CASCADE ON UPDATE NO ACTION
+    FOREIGN KEY (inumber) REFERENCES inode(id) ON DELETE CASCADE ON UPDATE NO ACTION
 );
 
 -- Drop and create directory table
@@ -32,8 +35,8 @@ DROP TABLE IF EXISTS `directory`;
 
 CREATE TABLE IF NOT EXISTS `directory`
 (
-    parent INT OPTIONS (description = "inumber of parent dir"),
-    child INT OPTIONS (description = "inumber of file or directory under parent dir"),
-    FORIEGN KEY (parent) REFERENCES inode(id) ON DELETE CASCADE ON UPDATE NO ACTION,
-    FORIEGN KEY (child) REFERENCES inode(id) ON DELETE CASCADE ON UPDATE NO ACTION
+    parent INT COMMENT "inumber of parent dir",
+    child INT COMMENT "inumber of file or directory under parent dir",
+    FOREIGN KEY (parent) REFERENCES inode(id) ON DELETE CASCADE ON UPDATE NO ACTION,
+    FOREIGN KEY (child) REFERENCES inode(id) ON DELETE CASCADE ON UPDATE NO ACTION
 );
