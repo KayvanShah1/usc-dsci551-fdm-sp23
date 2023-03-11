@@ -29,8 +29,17 @@ GROUP BY i.id,
     i.name;
 -- Question 5
 SELECT i.name
-from inode as i
-    JOIN directory d ON i.id = d.parent
-GROUP BY i.name,
-    i.id
-HAVING count(d.child) >= 2;
+FROM inode as i
+    JOIN (
+        SELECT parent,
+            count(child) as num_files
+        from (
+                SELECT d.parent,
+                    d.child
+                FROM directory as d
+                    JOIN inode i on i.id = d.child
+                WHERE type = "FILE"
+            ) as t
+        GROUP BY parent
+        HAVING num_files > 2
+    ) as x ON i.id = x.parent;
