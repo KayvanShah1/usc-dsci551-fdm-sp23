@@ -28,14 +28,14 @@ class MySQLClient:
         sql = "insert into inode values (%s,%s,%s,%s,%s,%s,%s,%s)"
         self.cursor.execute(
             sql,
-            (id, type, name, replication, mtime, atime, permission, preferredBlockSize),
+            (id, type, name, replication, mtime, atime, preferredBlockSize, permission),
         )
 
     def create_block(self, id, inumber, numBytes, genstamp):
         sql = "insert into blocks values (%s,%s,%s,%s)"
         self.cursor.execute(
             sql,
-            (id, inumber, numBytes, genstamp),
+            (id, inumber, genstamp, numBytes),
         )
 
     def create_dir(self, parent, child):
@@ -118,7 +118,7 @@ class LoadDatabase(MySQLClient):
         self.load_directory_table()
 
 
-def parse_args(line: list[str]) -> dict:
+def parse_args(line: list) -> dict:
     """Parse the command line arguments
 
     Args:
