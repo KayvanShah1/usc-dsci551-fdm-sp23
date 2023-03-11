@@ -1,80 +1,7 @@
 import sys
+import pymysql
 
 from lxml import etree
-
-from sqlalchemy import create_engine
-from sqlalchemy.orm import (
-    sessionmaker,
-    relationship,
-    DeclarativeBase,
-    Mapped,
-    mapped_column,
-)
-from sqlalchemy import Integer, String, ForeignKey, BigInteger, SmallInteger
-
-
-# Data Models
-class Base(DeclarativeBase):
-    pass
-
-
-class INode(Base):
-    __tablename__ = "inode"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    type: Mapped[str] = mapped_column(String(10), nullable=False)
-    name: Mapped[str] = mapped_column(String(30), nullable=False)
-    replication: Mapped[int] = mapped_column(SmallInteger, default=1)
-    mtime: Mapped[int] = mapped_column(BigInteger)
-    atime: Mapped[int] = mapped_column(BigInteger)
-    preferredBlockSize: Mapped[int] = mapped_column(Integer, default=134217728)
-    permission: Mapped[str] = mapped_column(String(120))
-
-    blocks: Mapped["Blocks"] = relationship(back_populates="blocks")
-    directory: Mapped["Directory"] = relationship(back_populates="directory")
-
-    def __repr__(self) -> str:
-        return f"INode(id={self.id!r}, name={self.name!r}, type={self.type!r})"
-
-
-class Blocks(Base):
-    __tablename__ = "blocks"
-
-    id: Mapped[int] = mapped_column(
-        Integer, primary_key=True, index=True, doc="inumber of block"
-    )
-    inumber: Mapped[str] = mapped_column(
-        String, ForeignKey("inode.id"), doc="inode id of file"
-    )
-    genstamp: Mapped[str] = mapped_column(Integer)
-    numBytes: Mapped[int] = mapped_column(Integer, default=1)
-
-    inode: Mapped["INode"] = relationship(
-        back_populates="inode", cascade="all, delete-orphan"
-    )
-
-    def __repr__(self) -> str:
-        return f"Blocks(id={self.id!r}, inumber={self.inumber!r}, numBytes={self.numBytes!r})"
-
-
-class Directory(Base):
-    __tablename__ = "directory"
-
-    parent: Mapped[int] = mapped_column(
-        Integer, ForeignKey("inode.id"), doc="inumber of parent dir"
-    )
-    child: Mapped[int] = mapped_column(
-        Integer,
-        ForeignKey("inode.id"),
-        doc="inumber of file or directory under parent dir",
-    )
-
-    inode: Mapped["INode"] = relationship(
-        back_populates="inode", cascade="all, delete-orphan"
-    )
-
-    def __repr__(self) -> str:
-        return f"Directory(parent={self.parent!r}, child={self.child!r}"
 
 
 class MySQLDBConfig:
@@ -84,36 +11,39 @@ class MySQLDBConfig:
     password = "Dsci-551"
     db_name = "dsci551"
 
-    connection_str = f"mysql+pymysql:///{user}:{password}@localhost/{db_name}"
-
 
 class MySQLClient:
-    def __init__(self, create_tables=False):
-        self.engine = create_engine(
-            MySQLDBConfig.connection_str,
-            connect_args={"check_same_thread": False},
-            echo=True,
+    def __init__(self):
+        self.connection = pymysql.connect(
+            host="localhost",
+            user=MySQLDBConfig.user,
+            password=MySQLDBConfig.password,
+            db=MySQLDBConfig.db_name,
         )
-        if create_tables:
-            Base.metadata.create_all(self.engine, checkfirst=True)
-        self.db = self.get_db()
+        self.cursor = self.connection.cursor()
 
-    def get_db(self):
-        db = sessionmaker(
-            bind=self.engine,
-            autocommit=False,
-            autoflush=False,
+    def create_inode(
+        self, id, type, name, replication, mtime, atime, permission, preferredBlockSize
+    ):
+        sql = "insert into inode values (%s,%s,%s,%s,%s,%s,%s,%s)"
+        self.cursor.execute(
+            sql,
+            (id, type, name, replication, mtime, atime, permission, preferredBlockSize),
         )
-        try:
-            yield db
-        finally:
-            db.close()
 
-    def create_obj(self, obj):
-        self.db.add(obj)
-        self.db.commit()
-        self.db.refresh(obj)
-        print(obj.__repr__())
+    def create_block(self, id, inumber, numBytes, genstamp):
+        sql = "insert into blocks values (%s,%s,%s,%s)"
+        self.cursor.execute(
+            sql,
+            (id, inumber, numBytes, genstamp),
+        )
+
+    def create_dir(self, parent, child):
+        sql = "insert into directory values (%s,%s)"
+        self.cursor.execute(
+            sql,
+            (parent, child),
+        )
 
 
 class LoadDatabase(MySQLClient):
@@ -150,7 +80,7 @@ class LoadDatabase(MySQLClient):
             preferredBlockSize = self.parse_int(tag.find("preferredBlockSize"))
             permission = self.parse_str(tag.find("permission"))
 
-            inode_obj = INode(
+            self.create_inode(
                 id=inode_id,
                 type=type_,
                 name=name,
@@ -160,7 +90,6 @@ class LoadDatabase(MySQLClient):
                 permission=permission,
                 preferredBlockSize=preferredBlockSize,
             )
-            self.create_obj(inode_obj)
 
             blocks = tag.xpath("./blocks/block")
             if len(blocks) != 0:
@@ -169,13 +98,12 @@ class LoadDatabase(MySQLClient):
                     genstamp = self.parse_int(block.xpath("./genstamp")[0])
                     numBytes = self.parse_int(block.xpath("./numBytes")[0])
 
-                    blocks_obj = Blocks(
+                    self.create_block(
                         id=block_id,
                         inumber=inode_id,
                         numBytes=numBytes,
                         genstamp=genstamp,
                     )
-                    self.create_obj(blocks_obj)
 
     def load_directory_table(self):
         for tag in self.tree.xpath("//INodeDirectorySection/directory"):
@@ -183,8 +111,7 @@ class LoadDatabase(MySQLClient):
             children = tag.findall("child")
             for child in children:
                 child = self.parse_int(child.text)
-                directory_obj = Directory(parent=parent, child=child)
-                self.create_obj(directory_obj)
+                self.create_dir(parent=parent, child=child)
 
     def load(self):
         self.load_inodes_blocks_table()
