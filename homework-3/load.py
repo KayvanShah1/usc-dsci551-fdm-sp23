@@ -110,7 +110,7 @@ class LoadDatabase(MySQLClient):
             parent = self.parse_int(tag.find("parent"))
             children = tag.findall("child")
             for child in children:
-                child = self.parse_int(child.text)
+                child = int(child.text)
                 self.create_dir(parent=parent, child=child)
 
     def load(self):
