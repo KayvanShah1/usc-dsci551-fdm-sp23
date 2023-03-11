@@ -26,24 +26,27 @@ class MySQLClient:
         self, id, type, name, replication, mtime, atime, permission, preferredBlockSize
     ):
         sql = "insert into inode values (%s,%s,%s,%s,%s,%s,%s,%s)"
-        self.cursor.execute(
+        resp = self.cursor.execute(
             sql,
             (id, type, name, replication, mtime, atime, preferredBlockSize, permission),
         )
+        print("Number of rows affected:", resp)
 
     def create_block(self, id, inumber, numBytes, genstamp):
         sql = "insert into blocks values (%s,%s,%s,%s)"
-        self.cursor.execute(
+        resp = self.cursor.execute(
             sql,
             (id, inumber, genstamp, numBytes),
         )
+        print("Number of rows affected:", resp)
 
     def create_dir(self, parent, child):
         sql = "insert into directory values (%s,%s)"
-        self.cursor.execute(
+        resp = self.cursor.execute(
             sql,
             (parent, child),
         )
+        print("Number of rows affected:", resp)
 
 
 class LoadDatabase(MySQLClient):
