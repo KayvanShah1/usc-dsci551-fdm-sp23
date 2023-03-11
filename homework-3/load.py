@@ -24,7 +24,7 @@ class INode(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     type: Mapped[str] = mapped_column(String(10), nullable=False)
     name: Mapped[str] = mapped_column(String(30), nullable=False)
-    replication: Mapped[int] = mapped_column(SmallInteger(30), default=1)
+    replication: Mapped[int] = mapped_column(SmallInteger, default=1)
     mtime: Mapped[int] = mapped_column(BigInteger)
     atime: Mapped[int] = mapped_column(BigInteger)
     preferredBlockSize: Mapped[int] = mapped_column(Integer, default=134217728)
