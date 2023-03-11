@@ -1,14 +1,17 @@
 -- Create a new database
 CREATE DATABASE IF NOT EXISTS dsci551;
 
--- Drop and create inode table
+-- Drop tables
+DROP TABLE IF EXISTS `directory`;
+DROP TABLE IF EXISTS `blocks`;
 DROP TABLE IF EXISTS `inode`;
 
+-- Create Tables
 CREATE TABLE IF NOT EXISTS `inode`
 (
     id INT COMMENT "inumber",
     type CHAR (10) NOT NULL,
-    name CHAR (30) NOT NULL UNIQUE,
+    name CHAR (30) NOT NULL,
     replication TINYINT DEFAULT 1,
     mtime BIGINT, 
     atime BIGINT,
@@ -16,9 +19,6 @@ CREATE TABLE IF NOT EXISTS `inode`
     permission CHAR (120),
     PRIMARY KEY (id)
 );
-
--- Drop and create blocks table
-DROP TABLE IF EXISTS `blocks`;
 
 CREATE TABLE IF NOT EXISTS `blocks`
 (
@@ -29,9 +29,6 @@ CREATE TABLE IF NOT EXISTS `blocks`
     PRIMARY KEY (id),
     FOREIGN KEY (inumber) REFERENCES inode(id) ON DELETE CASCADE ON UPDATE NO ACTION
 );
-
--- Drop and create directory table
-DROP TABLE IF EXISTS `directory`;
 
 CREATE TABLE IF NOT EXISTS `directory`
 (
