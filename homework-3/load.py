@@ -117,8 +117,15 @@ class LoadDatabase(MySQLClient):
                 self.create_dir(parent=parent, child=child)
 
     def load(self):
-        self.load_inodes_blocks_table()
-        self.load_directory_table()
+        try:
+            self.load_inodes_blocks_table()
+            self.load_directory_table()
+            self.connection.commit()
+        except Exception as e:
+            print("Error occurred while loading data", e)
+        finally:
+            self.cursor.close()
+            self.connection.close()
 
 
 def parse_args(line: list) -> dict:
