@@ -1,0 +1,43 @@
+<data>
+    <purchases>
+        <purchase>
+            <buyer>John</buyer>
+            <seller>David</seller>
+            <product>iphone12</product>
+            <store>store 1</store>
+            <price>500.5</price>
+        </purchase>
+        <purchase>
+            <buyer>John</buyer>
+            <seller>Bill</seller>
+            <product>Macbook</product>
+            <store>store 2</store>
+            <price>2000</price>
+        </purchase>
+    </purchases>
+    <products>
+        <product>
+            <name>iphone12</name>
+            <maker>Apple</maker>
+            <category>Cell phone</category>
+        </product>
+        <product>
+            <name>Macbook</name>
+            <maker>Apple</maker>
+            <category>Laptop</category>
+            <OS>macOS</OS>
+        </product>
+    </products>
+    <persons>
+        <person>
+            <name>John</name>
+            <city>LA</city>
+            <phone>1234</phone>
+        </person>
+        <person>
+            <name>David</name>
+            <city>SFO</city>
+            <phone>4567</phone>
+        </person>
+    </persons>
+</data>

@@ -1,0 +1,4 @@
+//purchase[buyer="John" and product="iphone12"]/seller/text()
+//product[category="Laptop"]/maker/text()
+//person[city="LA" and contains(phone, "4")]/name/text()
+//product[category="Laptop" and OS="Windows"]/maker/text()
