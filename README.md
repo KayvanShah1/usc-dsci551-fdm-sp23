@@ -4,7 +4,7 @@ Welcome to the comprehensive repository for _DSCI 510 - Foundations of Data Mana
 Within this repository, you'll find assignments and projects that delve fundamental concepts like data storage, file systems, relational vs. semi-structured data, SQL, and more. The course explores big data analytics, addressing NoSQL databases, cloud storage, distributed file systems, and MapReduce. Advanced topics like data cleaning, transformation, warehousing, and integration are also covered. It's important to use this repository responsibly, refraining from engaging in any activities associated with plagiarism.
 
 > [!TIP]
-> Before exploring the materials, take a moment to review the license and disclaimer for responsible utilization. The repository covers various topics, providing valuable insights and hands-on experience in Natural Language Processing.
+> Before exploring the materials, take a moment to review the license and disclaimer for responsible utilization. The repository covers various topics, providing valuable insights and hands-on experience in Data Management.
 
 ## Course Details:
 - **Course Name:** DSCI 510 - Foundations of Data Management
@@ -18,7 +18,7 @@ relational databases; the map-reduce paradigm.
 Feel free to explore the assignments, projects, and solutions provided as learning aids. Whether you're a beginner or an experienced practitioner, this repository aims to be your companion in mastering the intersection of foundational data management fundamentals within Data Science & Engineering. Happy learning!
 
 > [!CAUTION]
-> Please note that this repository serves as a reference guide and should be utilized as a tool for learning and comprehension. It's paramount to refrain from engaging in any activities associated with plagiarism. Embrace the wealth of knowledge herein to enhance your understanding and augment your skill set in the field of machine learning.
+> Please note that this repository serves as a reference guide and should be utilized as a tool for learning and comprehension. It's paramount to refrain from engaging in any activities associated with plagiarism. Embrace the wealth of knowledge herein to enhance your understanding and augment your skill set in the field of Data Engineering.
 
 ## Table of contents
 | Assignment | Topic Covered                 |
