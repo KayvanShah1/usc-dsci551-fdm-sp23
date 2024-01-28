@@ -23,15 +23,21 @@ Feel free to explore the assignments, projects, and solutions provided as learni
 ## Table of contents
 | Assignment | Topic Covered                 |
 |------------|-------------------------------|
-| Homework 1 | `Sentiment Analysis` on `Amazon Reviews Dataset` using Classical ML models |
-| Homework 2 | `Part-of-Speech (POS) Tagging` on `Wall Street Journal (WSJ) Dataset` using Hidden Markov Models + Greedy and Viterbi Decoding |
-| Homework 3 | `Sentiment Analysis` of `Amazon Reviews Dataset` using Word2Vec Embeddings and Neural Networks |
-| Homework 4 | `Named Entity Recognition (NER)` on `CoNLL-2003` corpus dataset|
-| Paper Presentation | [A Static Evaluation of Code Completion by Large Language Models](paper-presentation/Group37-PaperPresentation.pdf) |
+| [Homework 1](/homework-1) | Analyse `Air Quality Index (AQI)` data with `Firebase Realtime DB` |
+| [Homework 2](/homework-2) | Emulate `HDFS` command line using `Python` |
+| [Homework 3](/homework-3) | Understanding the usage of `SQL` and `XML parsing` on `HDFS snapshot` as XML document |
+| [Homework 4](/homework-4) | Indexing and Querying on `B+ Trees` |
+| [Homework 5](/homework-5) | Analysing `AQI Index` data of multiple countries using `Hadoop MapReduce & Spark` |
 | --- | --- |
-| Project Proposal | Leveraging static analysis for evaluating code-generation models |
-| Project Presentation | Leveraging static analysis for evaluating code-generation models |
-| Final Project | [Leveraging static analysis for evaluating code-generation models](https://github.com/ksanu1998/static_analysis_codegen_llms) |
+| [Lab 1](/lab-1) | Playing around with `file system` using `bash` command line on `AWS EC2` |
+| [Lab 2](/lab-2) | Setup `HDFS` on `AWS EC2` and execute basic file system commands |
+| [Lab 3](/lab-3) | Ingest and Query `AQI` data on `MongoDB` using `Mongo Atlas` |
+| [Lab 4](/lab-4) | Analyse `Books` data on `AWS DynamoDB` |
+| --- | --- |
+| [Exam Solutions](/exam-solutions) | Consists of PDF documents with snapshots of `2 midterms` and `final exam` quizzes along with solutions |
+| --- | --- |
+| [Project Documents](/project) | Consists of all documentation related to the development of final project |
+| [Project Repository](https://github.com/KayvanShah1/firebase-realtime-db-emulator) | Firebase Realtime Database Emulator using `FastAPI` and `MongoDB` |
 
 ## Authors
 1. [Kayvan Shah](https://github.com/KayvanShah1) | `MS in Applied Data Science` | `University of Southern California`
