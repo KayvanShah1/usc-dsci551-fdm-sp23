@@ -43,7 +43,7 @@ Feel free to explore the assignments, projects, and solutions provided as learni
 1. [Kayvan Shah](https://github.com/KayvanShah1) | `MS in Applied Data Science` | `University of Southern California`
 
 #### LICENSE
-This repository is licensed under the `BSD 5-Clause` License. See the [LICENSE](LICENSE) file for details.
+This repository is licensed under the `Educational Use and Academic Integrity` License. See the [LICENSE](LICENSE) file for details.
 
 #### Disclaimer
 
