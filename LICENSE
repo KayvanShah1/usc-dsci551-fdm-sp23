@@ -4,57 +4,79 @@ Copyright (c) 2023 Kayvan Shah
 
 All rights reserved except as expressly permitted below.
 
-This repository contains coursework, assignments, solutions, code, notes, and project material created for educational purposes.
+This repository contains coursework, assignments, solutions, code, notes, 
+and project material created for educational purposes.
 
-Permission is granted to view, download, and use the contents of this repository solely for personal learning, reference, and non-commercial educational purposes, subject to the following conditions:
+Permission is granted to view, download, and use the contents of this 
+repository solely for personal learning, reference, and non-commercial 
+educational purposes, subject to the following conditions:
 
 1. Personal Educational Use
 
-   You may study, run, modify, and experiment with the material privately for your own learning.
+   You may study, run, modify, and experiment with the material privately 
+   for your own learning.
 
 2. Attribution
 
-   Any permitted use of substantial portions of this material must retain the original copyright notice and provide appropriate attribution to the author.
+   Any permitted use of substantial portions of this material must retain 
+   the original copyright notice and provide appropriate attribution to the 
+   author.
 
 3. No Redistribution or Republishing
 
-   You may not redistribute, republish, mirror, sublicense, sell, or otherwise make available copies of this repository, in whole or in substantial part, without prior written permission from the author.
+   You may not redistribute, republish, mirror, sublicense, sell, or otherwise 
+   make available copies of this repository, in whole or in substantial part, 
+   without prior written permission from the author.
 
-   This includes publishing the material in another GitHub repository, website, archive, dataset, course-solution collection, or similar public or private distribution.
+   This includes publishing the material in another GitHub repository, website, 
+   archive, dataset, course-solution collection, or similar public or private distribution.
 
 4. No Academic Submission
 
-   You may not submit, present, or represent any part of this repository as your own academic work.
+   You may not submit, present, or represent any part of this repository as 
+   your own academic work.
 
-   You may not use this material to complete graded assignments, examinations, projects, take-home assessments, or other coursework where such use would violate the rules or academic-integrity policies of the relevant institution or course.
+   You may not use this material to complete graded assignments, examinations, 
+   projects, take-home assessments, or other coursework where such use would violate 
+   the rules or academic-integrity policies of the relevant institution or course.
 
 5. Derived Works
 
    You may create modifications for personal educational use.
 
-   Public distribution of derived works that substantially reproduce the structure, logic, solutions, or implementation contained in this repository requires prior written permission from the author.
+   Public distribution of derived works that substantially reproduce the structure, 
+   logic, solutions, or implementation contained in this repository requires prior 
+   written permission from the author.
 
-   Independently developed implementations inspired by general concepts, techniques, or publicly available course topics are not restricted by this clause.
+   Independently developed implementations inspired by general concepts, techniques, 
+   or publicly available course topics are not restricted by this clause.
 
 6. No Endorsement
 
-   The name of the author may not be used to endorse or promote products, services, repositories, or derived works without prior written permission.
+   The name of the author may not be used to endorse or promote products, services, 
+   repositories, or derived works without prior written permission.
 
 7. Academic Integrity
 
    This repository is provided as an educational reference.
 
-   Users are solely responsible for complying with the academic-integrity rules, honor codes, assignment policies, and other requirements of their institution, course, or employer.
+   Users are solely responsible for complying with the academic-integrity rules, honor 
+   codes, assignment policies, and other requirements of their institution, course, or employer.
 
-   The author does not authorize plagiarism, unauthorized collaboration, or submission of this material as original work.
+   The author does not authorize plagiarism, unauthorized collaboration, or submission 
+   of this material as original work.
 
 8. No Warranty
 
-   THIS MATERIAL IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, ACCURACY, OR NON-INFRINGEMENT.
+   THIS MATERIAL IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+   INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR 
+   PURPOSE, ACCURACY, OR NON-INFRINGEMENT.
 
 9. Limitation of Liability
 
-   IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES, ACADEMIC PENALTIES, DISCIPLINARY ACTION, LOSS, OR OTHER LIABILITY ARISING FROM THE USE, MISUSE, COPYING, OR DISTRIBUTION OF THIS MATERIAL.
+   IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES, ACADEMIC PENALTIES, 
+   DISCIPLINARY ACTION, LOSS, OR OTHER LIABILITY ARISING FROM THE USE, MISUSE, COPYING, 
+   OR DISTRIBUTION OF THIS MATERIAL.
 
 10. Additional Permissions
 
